@@ -1,24 +1,34 @@
 const socketClient = io();
 
-const formulario = document.getElementById("formulario");
-const input = document.getElementById("input");
-let container = document.getElementById("container");
 
-formulario.onsubmit = e => {
+//Chat desafio opcional
+
+const formularioChat = document.getElementById("formularioChat");
+const inputChat = document.getElementById("inputChat");
+const inputChat2 = document.getElementById("inputChat2");
+let containerChat = document.getElementById("containerChat");
+
+formularioChat.onsubmit = e => {
     e.preventDefault();
-    let nombreProducto = input.value;
+    let usuarioEmail = inputChat.value;
+    let mensaje = inputChat2.value;
 
-    producto = {
-        title: nombreProducto
+    obj = {
+        user: usuarioEmail,
+        message: mensaje
     }
+    console.log(obj);
 
-    socketClient.emit("nuevoProducto", producto);
+    socketClient.emit("nuevoChat", obj);
 }
 
-socketClient.on("productos", products => {
-    const productsRender = products.map(elem => {
-        return `<span>Producto: <b>${elem.title}</b></span><br>`
+socketClient.on("productosChat", obj => {
+    const chatRender = obj.map(elem => {
+        return `<div>
+                    <span>Usuario: <b>${elem.user}</b></span><br>
+                    <span>Mensaje: <b>${elem.message}</b></span><br>
+                </div>`
     }).join(" ");
 
-    container.innerHTML = productsRender;
-})
+    containerChat.innerHTML = chatRender;
+});

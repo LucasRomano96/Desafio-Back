@@ -1,7 +1,6 @@
 {
   "name": "desafios-backend---romano",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "type": "module",
   "scripts": {
@@ -13,7 +12,17 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-handlebars": "^6.0.7",
+    "mongoose": "^6.10.0",
     "nodemon": "^2.0.20",
     "socket.io": "^4.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucasRomano96/Desafio-Back.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LucasRomano96/Desafio-Back/issues"
+  },
+  "homepage": "https://github.com/LucasRomano96/Desafio-Back#readme",
+  "description": ""
 }
