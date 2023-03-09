@@ -22,20 +22,108 @@ export default class CartManager {
     async addProductToCart(cid, pid) {
         try {
             const cart = await cartModel.findById(cid);
-            cart.products.push(pid);
-            cart.save();
-            return cart;
+            
+            if (!cart) {
+                return cart;
+            }
+            else{
+                if (cart.products.length !== 0) {
+                    const productIndex = cart.products.findIndex((e) => e.productId == pid);
+
+                    if (productIndex !== -1) {
+                        let updateQ = await cartModel.updateOne(
+                            { _id: cid, "products.productId": pid },
+                            { $inc: { "products.$.quantity": 1 } }
+                        );
+                        return updateQ;
+                    } else {
+                        const pushProduct = cartModel.updateOne(
+                            { _id: cid },
+                            {
+                                $push: {
+                                    products: {
+                                        productId: pid,
+                                        quantity: 1,
+                                    },
+                                },
+                            }
+                        );
+                        return pushProduct;
+                    }
+                } 
+    
+                else 
+                {
+                    {
+                        const pushProduct = cartModel.updateOne(
+                            { _id: cid },
+                            {
+                                $push: {
+                                    products: {
+                                        productId: pid,
+                                        quantity: 1,
+                                    },
+                                },
+                            }
+                        );
+                        return pushProduct;
+                    }
+                }
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    async deleteProductById(id) {
+    async updateCartProductsByArray(cid,productsArray){
         try {
-            const deletedCart = await cartModel.findByIdAndDelete(id);
-            return deletedCart;
+            const updateCartProducts = await cartModel.findOneAndReplace({_id: cid},{products: productsArray},{new: true});
+            return updateCartProducts;
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    async updateQuantityByQuery(cid,pid,quantity){
+        try {
+            const filter = {_id: cid, "products.productId": pid};
+            const update = { $set: {"products.$.quantity": quantity}}
+            const updatedCartProduct = await cartModel.findOneAndUpdate(filter,update,{new:true});
+            
+            return updatedCartProduct;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async deleteProductInCart(cid, pid) {
+        try {
+            const cart = await cartModel.findOne({ _id: cid });
+            if (!cart) return console.log('Carrito no encontrado');
+
+            let productIndex = cart.products.findIndex(elem => elem._id == pid);
+
+            cart.products.splice(productIndex, 1);
+
+            await cart.save();
+            return cart;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async emptyCart(cid) {
+        try {
+            const cart = await cartModel.findOne({ _id: cid });
+            if (!cart) return console.log('Carrito no encontrado');
+
+            cart.products = [];
+            
+            await cart.save();
+
+        } catch (error) {
+            console.log(error)
         }
     }
 }
