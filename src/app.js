@@ -1,13 +1,15 @@
 import express from 'express';
-import ProductsRouter from "../routes/products.router.js";
-import CartRouter from "../routes/cart.router.js";
-import ViewsRouter from "../routes/views.router.js";
+import ProductsRouter from "./routes/products.router.js";
+import CartRouter from "./routes/cart.router.js";
+import ViewsRouter from "./routes/views.router.js";
 import UserRouter from "./routes/user.router.js";
 import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars";
 import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
+import passport from "passport";
 import "./dao/dbConfig.js";
+import "./passport/passportStrategies.js";
 
 //Servidor
 const app = express(); 
@@ -32,6 +34,11 @@ app.set("view engine", "handlebars");
 
 //Cookies
 app.use(cookieParser());
+
+//Inicializar passport
+app.use(passport.initialize());
+//Pasport guarda la información de session
+app.use(passport.session());
 
 
 
