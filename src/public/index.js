@@ -1,34 +1,32 @@
-const socketClient = io();
+const form = document.getElementById('form');
+const inputEmail = document.getElementById("email");
+const inputPassword = document.getElementById("password");
+const button = document.getElementById("button");
 
-
-//Chat desafio opcional
-
-const formularioChat = document.getElementById("formularioChat");
-const inputChat = document.getElementById("inputChat");
-const inputChat2 = document.getElementById("inputChat2");
-let containerChat = document.getElementById("containerChat");
-
-formularioChat.onsubmit = e => {
+form.onsubmit = e  => {
     e.preventDefault();
-    let usuarioEmail = inputChat.value;
-    let mensaje = inputChat2.value;
-
-    obj = {
-        user: usuarioEmail,
-        message: mensaje
-    }
-    console.log(obj);
-
-    socketClient.emit("nuevoChat", obj);
+    fetch("http://localhost:8080/jwt/login", {
+        method: 'POST',
+        body: JSON.stringify({
+            email: inputEmail.value,
+            password: inputPassword.value
+        }),
+        headers: { 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(document.cookie);
+        console.log("todo correcto");
+    });
 }
 
-socketClient.on("productosChat", obj => {
-    const chatRender = obj.map(elem => {
-        return `<div>
-                    <span>Usuario: <b>${elem.user}</b></span><br>
-                    <span>Mensaje: <b>${elem.message}</b></span><br>
-                </div>`
-    }).join(" ");
-
-    containerChat.innerHTML = chatRender;
-});
+button.onclick = () => {
+    fetch("http://localhost:8080/jwt/login", {
+        method: 'GET',
+        headers: { 
+            'Content-Type': 'application/json',
+        }
+    })
+}
