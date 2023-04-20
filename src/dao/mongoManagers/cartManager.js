@@ -3,7 +3,7 @@ import { cartModel } from "../models/cart.model.js";
 export default class CartManager {
     async getCartById(id) {
         try {
-            const cart = await cartModel.find({ _id:id });
+            const cart = await cartModel.find({ _id:id }).lean();
             return cart;
         } catch (error) {
             console.log(error);
@@ -24,7 +24,7 @@ export default class CartManager {
             const cart = await cartModel.findById(cid);
             
             if (!cart) {
-                return cart;
+                return null;
             }
             else{
                 if (cart.products.length !== 0) {
@@ -125,5 +125,10 @@ export default class CartManager {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    async updateCart(cid, product) {
+        const update = await cartModel.findOne(cid, product);
+        return update;
     }
 }

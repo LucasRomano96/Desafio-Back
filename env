@@ -1,0 +1,8 @@
+PORT=8080
+MONGO_URL=mongodb+srv://lucasromano96:<password>@cluster9697.ol0dxld.mongodb.net/?retryWrites=true&w=majority
+# Github Strategy  
+CLIENT_ID=Iv1.8a0d31b152ad17f9
+CLIENT_SECRET=1c7ab8ede787999bb766e8ec548548ca9de29962
+CALLBACK_URL=http://localhost:8080/user/github
+# Cookie Key  
+COOKIE_KEY=AJUGHBV15487
