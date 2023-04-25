@@ -1,0 +1,21 @@
+<h2>Carrito</h2>
+
+<div class="products_container">
+
+{{#each arrayProducts}}
+
+    <div>
+        <h3>Producto: {{productId.title}}</h3>
+        <h4>Precio unitario: $ {{productId.price}}</h4>
+        <h5>Cantidad: {{quantity}}</h5>
+    </div>
+
+{{/each}}
+
+</div>
+
+<div>
+    <button class="products_button" onclick="location.href='/api/cart/{{cartId}}/purchase'">
+        Finalizar Compra
+    </button>
+</div>

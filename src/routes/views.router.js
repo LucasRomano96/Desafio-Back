@@ -17,26 +17,28 @@ router.use(cookieParser(cookieKey));
 //Ruta products hdb
 
 router.get("/products", passport.authenticate("jwt", {session: false}), async (req, res) => {
-    const userName = req.user.firstName;
+    const userData = req.user;
+    const cartId = userData.cart.cartId;
+    console.log(cartId);
     
     try {
         const products = await product.getProducts();
-        res.render("products", { products, userName });
+        res.render("products", { products, userData, cartId });
     } catch (error) {
         console.log(error);
     }
 });
 
 //Carrito
-router.get("/carts/:cid", async (req, res) => {
-    const {cid} = req.params;
+router.get("/cartUser", passport.authenticate("jwt", {session: false}), async (req, res) => {
+    const { cartId } = req.user.cart;
+    let arrayProducts;
 
     try {
-        const getCart = await cart.getCartById(cid);
+        const userCart = await cart.getCartById(cartId);
+        arrayProducts = userCart[0]?.hasOwnProperty("products") ? userCart[0].products : null;
         
-        let arrayProducts = getCart[0].products;
-
-        res.render("cart", { arrayProducts });
+        res.render("cart", { arrayProducts, cartId });
     } catch (error) {
         console.log(error);
     }
@@ -63,8 +65,14 @@ router.get("/errorLogin", (req, res) => {
 });
 
 //Perfil
-router.get("/profile", (req, res) => {
-    res.render("profile");
+router.get("/profile", passport.authenticate("jwt", {session: false}), (req, res) => {
+    const userData = req.user;
+
+    try {
+        res.render("profile", {userData});
+    } catch (error) {
+        console.log("Error al renderizar el perfil");
+    }
 });
 
 //JWT
