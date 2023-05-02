@@ -1,5 +1,6 @@
-import { getCartByIdService } from "../../services/cart.services.js";
-import { updateProductService } from "../../services/products.services.js";
+import cartService from "../../services/cart.services.js";
+import productService from "../../services/products.services.js";
+import { transporter } from "../../utils.js";
 
 export const isAdmin = (req, res, next) => {
     if (req.user.role === 'admin') {
@@ -19,19 +20,39 @@ export const isUser = (req, res, next) => {
 
 export const discountStock = async (req, res, next) => {
     const { cid } = req.params;
+    let noStockProducts = "Los siguientes productos superan el stock disponible:";
     let amount = 0;
 
-    const findCart = await getCartByIdService(cid);
+    const findCart = await cartService.getCartById(cid);
     
     findCart[0].products.map(async (elem) => {
         if (elem.quantity <= elem.productId.stock) {
             amount += elem.productId.price;
             let newStock = elem.productId.stock - elem.quantity;
-            await updateProductService(elem.productId._id, { stock: newStock });
+            
+            await productService.updateProduct(elem.productId._id, { stock: newStock });
+            await cartService.deleteProductInCart(cid, elem.productId._id);
         } else {
-            res.send(`Los siguientes productos superan el stock disponible: ${elem.productId.title}`)
+            noStockProducts += ` ${elem.productId.title}`;
         }
     });
     res.locals.data = amount;
+    res.send(noStockProducts);
+    next();
+}
+
+//Envío de email con nodemailer
+export const sendEmail = async (req, res, next) => {
+    const { email } = req.user;
+    try {
+        await transporter.sendMail({
+            from: "E-commerce",
+            to: email,
+            subject: "Nueva Compra",
+            text: "Realizaste una nueva compra"
+        });
+    } catch (error) {
+        console.log(error);
+    }
     next();
 }

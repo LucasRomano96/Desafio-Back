@@ -3,6 +3,8 @@ import ProductsRouter from "./routes/products.router.js";
 import CartRouter from "./routes/cart.router.js";
 import ViewsRouter from "./routes/views.router.js";
 import UserRouter from "./routes/user.router.js";
+import MockRouter from "./routes/mocking.router.js";
+import { errorMiddleware } from './errors/errors.middleware.js';
 import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars";
 import { Server } from 'socket.io';
@@ -25,11 +27,15 @@ app.use(express.urlencoded({ extended:true }));
 app.use(cors());
 
 //Redireccionamiento a los archivos
-app.use("/api/products", ProductsRouter);
-app.use("/api/cart", CartRouter);
+app.use("/api/products", ProductsRouter.getRouter());
+app.use("/api/cart", CartRouter.getRouter());
 app.use("/views", ViewsRouter);
-app.use("/user", UserRouter);
+app.use("/user", UserRouter.getRouter());
 app.use("/jwt", jwtRouter);
+app.use("/mockingproducts", MockRouter);
+
+//Middleware de errores
+app.use(errorMiddleware);
 
 //Ruta absoluta
 app.use(express.static(__dirname + "/public"));
@@ -43,7 +49,7 @@ app.set("view engine", "handlebars");
 app.use(cookieParser());
 
 //Session
-/* app.use(session(
+app.use(session(
     {
         secret: 'secret key',
         resave: false,
@@ -52,7 +58,7 @@ app.use(cookieParser());
             mongoUrl: config.MONGO_URL
         })
     }
-)); */
+));
 
 //Inicializar passport
 app.use(passport.initialize());
