@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import config from "../config/config.js"
 
-try {
-    await mongoose.connect(config.MONGO_URL);
-    console.log("Conectado a la base de datos con éxito");
-} catch (error) {
-    console.log(error);
-}
+mongoose.set("strictQuery", false);
+mongoose.connect(config.MONGO_URL, (error) => {
+    if (error) {
+        console.log("Hubo un error al conectar con base de datos");
+    } else {
+        console.log("Conectado a la base de datos con éxito");
+    }
+});

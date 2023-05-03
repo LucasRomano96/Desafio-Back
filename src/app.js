@@ -18,6 +18,7 @@ import jwtRouter from "./routes/jwt.router.js";
 import config from "./config/config.js";
 import cors from "cors";
 
+
 //Servidor
 const app = express(); 
 
@@ -38,6 +39,7 @@ app.use("/mockingproducts", MockRouter);
 app.use(errorMiddleware);
 
 //Ruta absoluta
+console.log(__dirname);
 app.use(express.static(__dirname + "/public"));
 
 //Configurar Handlebars
