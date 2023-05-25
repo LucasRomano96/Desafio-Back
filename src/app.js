@@ -4,7 +4,8 @@ import CartRouter from "./routes/cart.router.js";
 import ViewsRouter from "./routes/views.router.js";
 import UserRouter from "./routes/user.router.js";
 import MockRouter from "./routes/mocking.router.js";
-import { errorMiddleware } from './errors/errors.middleware.js';
+import LoggerRouter from "./routes/logger.router.js";
+import { errorMiddleware } from './dao/middlewares/middlewares.js';
 import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars";
 import { Server } from 'socket.io';
@@ -17,10 +18,11 @@ import session from "express-session";
 import jwtRouter from "./routes/jwt.router.js";
 import config from "./config/config.js";
 import cors from "cors";
-
+import swaggerUi from "swagger-ui-express";
+import { swaggerSetup } from './swaggerConfig.js';
 
 //Servidor
-const app = express(); 
+const app = express();
 
 //Configuracion inicial express
 app.use(express.json());
@@ -34,12 +36,11 @@ app.use("/views", ViewsRouter);
 app.use("/user", UserRouter.getRouter());
 app.use("/jwt", jwtRouter);
 app.use("/mockingproducts", MockRouter);
-
-//Middleware de errores
-app.use(errorMiddleware);
+app.use("/loggerTest", LoggerRouter);
+// swagger documentation endpoint
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSetup));
 
 //Ruta absoluta
-console.log(__dirname);
 app.use(express.static(__dirname + "/public"));
 
 //Configurar Handlebars
@@ -67,6 +68,8 @@ app.use(passport.initialize());
 //Pasport guarda la información de session
 app.use(passport.session());
 
+//Middleware de errores
+app.use(errorMiddleware);
 
 //HTTP server
 

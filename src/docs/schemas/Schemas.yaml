@@ -1,0 +1,42 @@
+components:
+  schemas:
+    CartItem:
+      type: object
+      properties:
+        productId:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+        _id:
+          type: string
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        thumbnail:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+        stock:
+          type: integer
+        category:
+          type: string
+        status:
+          type: boolean
+        __v:
+          type: integer
+
+    Cart:
+      type: array
+      items:
+        $ref: '#/components/schemas/CartItem'

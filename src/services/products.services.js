@@ -23,23 +23,39 @@ class ProductService {
     }
 
     getProductById = async (id) => {
-        const products = await this.dao.getProductById(id);
-        return products;
+        try {
+            const products = await this.dao.getProductById(id);
+            return products;
+        } catch (error) {
+            throw error;
+        }
     }
 
     addProduct = async (obj) => {
-        const newProduct = await this.dao.addProduct(obj);
-        return newProduct;
+        try {
+            const newProduct = await this.dao.addProduct(obj);
+            return newProduct;
+        } catch (error) {
+            throw error;
+        }
     }
 
     updateProduct = async (id, obj) => {
-        const updateProduct = await this.dao.updateProduct(id, obj);
-        return updateProduct;
+        try {
+            const updateProduct = await this.dao.updateProduct(id, obj);
+            return updateProduct;
+        } catch (error) {
+            throw error;
+        }
     }
 
     deleteProduct = async (id) => {
-        const deletedProduct = await this.dao.deleteProduct(id);
-        return deletedProduct;
+        try {
+            const deletedProduct = await this.dao.deleteProduct(id);
+            return deletedProduct;
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

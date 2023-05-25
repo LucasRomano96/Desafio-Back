@@ -1,6 +1,4 @@
 import productService from "../services/products.services.js";
-import CustomError from "../errors/CustomError.js";
-import { ErrorsName, ErrorsMessage, ErrorsCause } from "../errors/errors.enum.js";
 
 class ProductController {
 
@@ -29,50 +27,61 @@ class ProductController {
         });
     }
     
-    getProductById = async (req, res) => {
+    getProductById = async (req, res, next) => {
         const { id } = req.params;
-        const productId = await productService.getProductById(id);
-    
-        if (productId) {
-            res.json({ message: "Producto encontrado", productId });
-        } else {
-            CustomError.createCustomError({
-                name: ErrorsName.PRODUCT_DATA_INCOMPLETE,
-                message: ErrorsMessage.PRODUCT_DATA_INCOMPLETE,
-                cause: ErrorsCause.PRODUCT_DATA_INCOMPLETE
-            });
+        
+        try {
+            const productId = await productService.getProductById(id);
+            if (productId) {
+                res.json({ message: "Producto encontrado", productId });
+            }
+        } catch (error) {
+            next(error)
         }
+
     }
     
-    addProduct = async (req, res) => {
+    addProduct = async (req, res, next) => {
         const objeto = req.body;
-        const addProduct = await productService.addProduct(objeto);
-    
-        if (addProduct) {
-            res.json({ message: "Producto agregado con exito" });
-        } else {
-            res.json({ message: "Producto no pudo ser agregado" });
+        
+        try {
+            const addProduct = await productService.addProduct(objeto);
+            if (addProduct) {
+                res.json({ message: "Producto agregado con exito" });
+            } else {
+                res.json({ message: "Producto no pudo ser agregado" });
+            }
+        } catch (error) {
+            next(error);
         }
+        
     }
     
-    updateProduct = async (req, res) => {
+    updateProduct = async (req, res, next) => {
         const { id } = req.params;
         const campo = req.body;
     
-        const update = await productService.updateProduct(id, campo);
-    
-        if (update) {
-            res.json({ message: "Producto actualizado con exito", update });
-        } else {
-            res.json({ message: "Producto no pudo ser actualizado" });
+        try {
+            const update = await productService.updateProduct(id, campo);
+            if (update) {
+                res.json({ message: "Producto actualizado con exito", update });
+            }
+        } catch (error) {
+            next(error);
         }
     }
     
-    deleteProduct = async (req, res) => {
+    deleteProduct = async (req, res, next) => {
         const { id } = req.params;
-        await productService.deleteProduct(id);
-    
-        res.json({ message: "Producto eliminado con exito" });
+        
+        try {
+            const deletedProduct = await productService.deleteProduct(id);
+            if (deletedProduct) {
+                res.json({ message: "Producto eliminado con exito" });
+            }
+        } catch (error) {
+            next(error);
+        }
     }
 }
 
