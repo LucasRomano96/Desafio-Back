@@ -8,13 +8,9 @@ import LoggerRouter from "./routes/logger.router.js";
 import { errorMiddleware } from './dao/middlewares/middlewares.js';
 import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars";
-import { Server } from 'socket.io';
-import cookieParser from 'cookie-parser';
 import passport from "passport";
 import "./dao/dbConfig.js";
 import "./passport/passportStrategies.js";
-import MongoStore from "connect-mongo";
-import session from "express-session";
 import jwtRouter from "./routes/jwt.router.js";
 import config from "./config/config.js";
 import cors from "cors";
@@ -48,36 +44,15 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-//Cookies
-app.use(cookieParser());
-
-//Session
-app.use(session(
-    {
-        secret: 'secret key',
-        resave: false,
-        saveUninitialized: true,
-        store: new MongoStore ({
-            mongoUrl: config.MONGO_URL
-        })
-    }
-));
-
 //Inicializar passport
 app.use(passport.initialize());
-//Pasport guarda la información de session
-app.use(passport.session());
 
 //Middleware de errores
 app.use(errorMiddleware);
 
 //HTTP server
-
 const PORT = config.PORT;
 
-const httpServer = app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Escuchando puerto ${PORT}`);
 });
-
-//Socket server
-export const socketServer = new Server(httpServer);
