@@ -9,7 +9,7 @@ import { errorMiddleware } from './dao/middlewares/middlewares.js';
 import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars";
 import passport from "passport";
-import "./dao/dbConfig.js";
+import "./dao/dbconfig.js";
 import "./passport/passportStrategies.js";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
