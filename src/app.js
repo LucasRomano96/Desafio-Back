@@ -14,6 +14,7 @@ import "./passport/passportStrategies.js";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSetup } from './swaggerConfig.js';
+import config from './config/config.js';
 
 const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
@@ -49,4 +50,8 @@ app.use(passport.initialize());
 //Middleware de errores
 app.use(errorMiddleware);
 
-export default app;
+const PORT = config.PORT;
+
+app.listen(PORT, () => {
+    console.log(`Escuchando puerto ${PORT}`);
+});
